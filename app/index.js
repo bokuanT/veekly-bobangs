@@ -4,7 +4,7 @@ import { Stack, useRouter } from "expo-router";
 
 import { COLORS, icons, images, SIZES} from '../constants';
 import {
-    Nearbyjobs, Popularjobs, ScreenHeaderBtn, Welcome
+    Nearbyjobs, ScreenHeaderBtn, Welcome
 } from '../components';
 import { Map } from '../location/Map';
 
@@ -35,10 +35,6 @@ const Home = () => {
                 >
                     <Welcome
                     
-                    />
-
-                    <Popularjobs
-
                     />
 
                     <Nearbyjobs
