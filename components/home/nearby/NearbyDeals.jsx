@@ -7,11 +7,13 @@ import { useRouter } from 'expo-router'
 import styles from './nearbydeals.style'
 import { COLORS, SIZES } from '../../../constants'
 import NearbyDealCard from '../../common/cards/nearby/NearbyDealCard'
+import useFetch from '../../../hook/useFetch'
 
 const NearbyDeals = () => {
   const router = useRouter();
-  const isLoading = false;
-  const error = false;
+  
+  const {data, isLoading, error } = useFetch();
+  console.log(data)
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -28,13 +30,13 @@ const NearbyDeals = () => {
           <Text>Something went wrong</Text>
         ) : (
           <FlatList
-            data={[1, 2, 3, 4]}
+            data={data}
             renderItem={({item}) => (
               <NearbyDealCard
                 item={item}
               />
             )}
-            keyExtractor={item => item?.deal_id}
+            keyExtractor={item => item?.id}
             contentContainerStyle={{columnGap: SIZES.medium}}
             horizontal
           />

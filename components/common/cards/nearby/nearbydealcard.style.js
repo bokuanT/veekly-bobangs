@@ -3,25 +3,23 @@ import { StyleSheet } from "react-native";
 import { COLORS, SHADOWS, SIZES } from "../../../../constants";
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: (selectedDeal, item) => ({
+    width: 250,
+    padding: SIZES.xLarge,
+    backgroundColor: selectedDeal === item.job_id ? COLORS.primary : "#FFF",
+    borderRadius: SIZES.medium,
     justifyContent: "space-between",
-    alignItems: "center",
-    flexDirection: "row",
-    padding: SIZES.medium,
-    borderRadius: SIZES.small,
-    backgroundColor: "#FFF",
     ...SHADOWS.medium,
     shadowColor: COLORS.white,
-  },
-  logoContainer: {
+  }),
+  logoContainer: (selectedDeal, item) => ({
     width: 50,
     height: 50,
-    backgroundColor: COLORS.white,
+    backgroundColor: selectedDeal === item.job_id ? "#FFF" : COLORS.white,
     borderRadius: SIZES.medium,
     justifyContent: "center",
     alignItems: "center",
-  },
+  }),
   logImage: {
     width: "70%",
     height: "70%",
