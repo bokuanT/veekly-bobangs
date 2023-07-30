@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   container: (selectedDeal, item) => ({
     width: 250,
     padding: SIZES.xLarge,
-    backgroundColor: selectedDeal === item.job_id ? COLORS.primary : "#FFF",
+    backgroundColor: selectedDeal === item.id ? COLORS.primary : "#FFF",
     borderRadius: SIZES.medium,
     justifyContent: "space-between",
     ...SHADOWS.medium,
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   logoContainer: (selectedDeal, item) => ({
     width: 50,
     height: 50,
-    backgroundColor: selectedDeal === item.job_id ? "#FFF" : COLORS.white,
+    backgroundColor: selectedDeal === item.id ? "#FFF" : COLORS.white,
     borderRadius: SIZES.medium,
     justifyContent: "center",
     alignItems: "center",
@@ -28,12 +28,12 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: SIZES.medium,
   },
-  jobName: {
+  dealName: {
     fontSize: SIZES.medium,
     fontFamily: "DMBold",
     color: COLORS.primary,
   },
-  jobType: {
+  dealType: {
     fontSize: SIZES.small + 2,
     fontFamily: "DMRegular",
     color: COLORS.gray,

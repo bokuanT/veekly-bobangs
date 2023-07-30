@@ -4,7 +4,6 @@ import { View, Text, TouchableOpacity, Image } from 'react-native'
 import styles from './nearbydealcard.style'
 
 const NearbyDealCard = ({item, selectedDeal, handleCardPress}) => {
-  console.log(item.mensaje)
   return (
     <TouchableOpacity
       style={styles.container(selectedDeal, item)}
@@ -17,6 +16,7 @@ const NearbyDealCard = ({item, selectedDeal, handleCardPress}) => {
           style={styles.logImage}
         />
       </TouchableOpacity>
+      <Text style={styles.dealName} numberOfLines={1}>{item.nombrePromo}</Text>
     </TouchableOpacity>
   )
 }
