@@ -14,6 +14,7 @@ const NearbyDeals = () => {
   
   const {data, isLoading, error } = useFetch();
   console.log(data)
+  console.log(error)
   return (
     <View style={styles.container}>
       <View style={styles.header}>

@@ -11,12 +11,12 @@ const NearbyDealCard = ({item, selectedDeal, handleCardPress}) => {
     >
       <TouchableOpacity style={styles.logoContainer(selectedDeal, item)}>
         <Image 
-          source={{uri: item.linkImagen}}
+          source={{uri: item.image_link}}
           resizeMode='contain'
           style={styles.logImage}
         />
       </TouchableOpacity>
-      <Text style={styles.dealName} numberOfLines={1}>{item.nombrePromo}</Text>
+      <Text style={styles.dealName} numberOfLines={1}>{item.name}</Text>
     </TouchableOpacity>
   )
 }

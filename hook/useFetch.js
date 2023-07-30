@@ -18,11 +18,14 @@ const useFetch = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.request
-            (options);
+            // const response = await axios.request
+            // (options);
 
-            setData(response.data.promo)
+            // setData(response.data.promo)
+            const res = await axios.get('http://bokuan.pythonanywhere.com/get')
+            setData(res.data)
         } catch (error) {
+            console.log(error.message)
             setError(error);
             alert('There is an error');
         } finally {
