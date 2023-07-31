@@ -13,7 +13,13 @@ const useFetch = () => {
           'X-RapidAPI-Host': 'pizzaallapala.p.rapidapi.com'
         }
     };
-
+    const options2 = {
+        method: 'GET',
+        url: 'https://4dca-137-132-26-96.ngrok-free.app/get',
+        headers: {
+            "ngrok-skip-browser-warning": "69420"
+          }
+    }
     const fetchData = async () => {
         setIsLoading(true);
 
@@ -22,8 +28,12 @@ const useFetch = () => {
             // (options);
 
             // setData(response.data.promo)
-            const res = await axios.get('http://bokuan.pythonanywhere.com/get')
-            setData(res.data)
+
+            // const res = await axios.get('https://e1d9-137-132-26-96.ngrok-free.app/get')
+            // setData(res.data)
+
+            const response = await axios.request(options2)
+            setData(response.data)
         } catch (error) {
             console.log(error.message)
             setError(error);
