@@ -20,7 +20,18 @@ const Layout = () => {
 
     if (!fontsLoaded) return null;
 
-    return <Stack onLayout={onLayoutRootView} />;
+    return <Stack 
+        // screenOptions={{
+        //     headerStyle: {
+        //     backgroundColor: "orange",
+        //     },
+        //     headerTintColor: "white",
+        //     headerTitleStyle: {
+        //     fontWeight: "bold",
+        //     },
+        // }}
+        onLayout={onLayoutRootView} 
+        />;
 }
 
 export default Layout;
