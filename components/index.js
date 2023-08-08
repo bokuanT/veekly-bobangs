@@ -25,5 +25,5 @@ export {
   JobAbout,
   JobFooter,
   Specifics,
-  NearbyDealCard as NearbyJobCard
+  NearbyDealCard
 };
