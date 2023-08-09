@@ -18,12 +18,12 @@ import NearbyDealCard from "./common/cards/nearby/NearbyDealCard";
 export {
   ScreenHeaderBtn,
   Welcome,
-  NearbyDeals as Nearbyjobs,
+  NearbyDeals,
   Popularjobs,
   Company,
   JobTabs,
   JobAbout,
   JobFooter,
   Specifics,
-  NearbyDealCard as NearbyJobCard
+  NearbyDealCard
 };
