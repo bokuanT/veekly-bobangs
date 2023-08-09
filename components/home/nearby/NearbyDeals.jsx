@@ -10,11 +10,11 @@ import NearbyDealCard from '../../common/cards/nearby/NearbyDealCard'
 import useFetch from '../../../hook/useFetch'
 
 const NearbyDeals = () => {
-  const router = useRouter();
+  //const router = useRouter();
   
   const {data, isLoading, error } = useFetch();
   console.log(data)
-  console.log(error)
+  //console.log(error)
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -39,7 +39,6 @@ const NearbyDeals = () => {
             )}
             keyExtractor={item => item?.id}
             contentContainerStyle={{columnGap: SIZES.medium}}
-            horizontal
           />
         )}
       </View>

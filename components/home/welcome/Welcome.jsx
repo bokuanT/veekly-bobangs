@@ -15,12 +15,10 @@ import {icons, SIZES} from '../../../constants'
 const WELCOME_SHORTCUT_BUTTONS = ["Chope", "Burple"];
 
 const Welcome = () => {
-  // const router = useRouter();
   const [activeTabType, setActiveTabType] = useState("Chope")
 
   return (
     <View>
-      {/* <Text>map</Text> */}
 
       <View style={styles.container}>
         <Text style={styles.welcomeMessage}>Welcome to veekly bobangs</Text>

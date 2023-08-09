@@ -15,7 +15,7 @@ const useFetch = () => {
     };
     const options2 = {
         method: 'GET',
-        url: 'https://4dca-137-132-26-96.ngrok-free.app/get',
+        url: 'https://6fcc-137-132-26-238.ngrok-free.app/get',
         headers: {
             "ngrok-skip-browser-warning": "69420"
           }
@@ -24,14 +24,6 @@ const useFetch = () => {
         setIsLoading(true);
 
         try {
-            // const response = await axios.request
-            // (options);
-
-            // setData(response.data.promo)
-
-            // const res = await axios.get('https://e1d9-137-132-26-96.ngrok-free.app/get')
-            // setData(res.data)
-
             const response = await axios.request(options2)
             setData(response.data)
         } catch (error) {
