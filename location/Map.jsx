@@ -1,15 +1,31 @@
 import React, {useState, useEffect} from 'react';
 import MapView, {Marker} from 'react-native-maps';
-import { Platform, Text, View, StyleSheet, TextInput } from 'react-native';
+import { 
+    Platform, 
+    Text, 
+    View, 
+    StyleSheet, 
+    TextInput, 
+    ScrollView, 
+    TouchableOpacity, 
+    Animated, 
+    Dimensions, 
+    } from 'react-native';
+
 import { COLORS, icons, images, SIZES} from '../constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import {markers} from './mapData';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import Geolocation from '@react-native-community/geolocation';
 import * as Location from "expo-location";
 
+const { width, height } = Dimensions.get("window");
+const CARD_HEIGHT = 220;
+const CARD_WIDTH = width * 0.8;
+const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 
-export const Map = () => {
+export const Mapss   = () => {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [position, setPosition] = useState({
@@ -18,33 +34,48 @@ export const Map = () => {
         latitudeDelta: 0.001,
         longitudeDelta: 0.001,
       });
+
     const initialMapState = {
         markers,
         categories: [
-          { 
-            name: 'Fastfood Center', 
-            icon: <MaterialCommunityIcons style={styles.chipsIcon} name="food-fork-drink" size={18} />,
-          },
-          {
-            name: 'Restaurant',
-            icon: <Ionicons name="ios-restaurant" style={styles.chipsIcon} size={18} />,
-          },
-          {
-            name: 'Dineouts',
-            icon: <Ionicons name="md-restaurant" style={styles.chipsIcon} size={18} />,
-          },
-          {
-            name: 'Snacks Corner',
-            icon: <MaterialCommunityIcons name="food" style={styles.chipsIcon} size={18} />,
-          },
-          {
-            name: 'Hotel',
-            icon: <Fontisto name="hotel" style={styles.chipsIcon} size={15} />,
-          },
-      ],
-      };
-    
+            { 
+                name: 'Chope', 
+                icon: <MaterialCommunityIcons style={styles.chipsIcon} name="food-fork-drink" size={18} />,
+            },
+            {
+                name: 'Burpple',
+                icon: <Ionicons name="ios-restaurant" style={styles.chipsIcon} size={18} />,
+            },
+            {
+                name: 'Eatigo',
+                icon: <Ionicons name="md-restaurant" style={styles.chipsIcon} size={18} />,
+            },
+        ],
+    };
+
+
     const [state, setState] = React.useState(initialMapState);
+
+    let mapAnimation = new Animated.Value(0);
+
+
+    const interpolations = state.markers.map((marker, index) => {
+        const inputRange = [
+            (index - 1) * CARD_WIDTH,
+            index * CARD_WIDTH,
+            ((index + 1) * CARD_WIDTH),
+            ];
+        
+            const scale = mapAnimation.interpolate({
+            inputRange,
+            outputRange: [1, 1.5, 1],
+            extrapolate: "clamp"
+            });
+        
+            return { scale };
+        }
+    );
+    
 
     useEffect(() => {
         (async () => {
@@ -70,30 +101,33 @@ export const Map = () => {
         })();
     }, []);
 
-
-
-
-
-    // let lat = '';
-    // let lon = '';
-    // if (errorMsg) {
-    //     text = errorMsg;
-    // } else if (location) {
-    //     JSON.stringify(location);
-    //     lat = location.coords.latitude;
-    //     lon = location.coords.longitude;
-    //     console.log(lat)
-    //     console.log(lon)
-    // }
-
     return (
         <View style={styles.container}>
             <MapView
                 style={styles.map} 
                 // mapType=''
                 region={position}>
-                <Marker
-                    coordinate={position}/>
+                <Marker coordinate={position}/>
+                {state.markers.map((marker, index) => {
+                    const scaleStyle = {
+                        transform: [
+                            {
+                                scale: interpolations[index].scale,
+                            },
+                        ],
+                    };
+                    return (
+                        <MapView.Marker key={index} coordinate={marker.coordinate} onPress={(e)=>onMarkerPress(e)}>
+                            <Animated.View style={[styles.markerWrap]}>
+                                <Animated.Image
+                                source={require('../assets/icons/map_marker.png')}
+                                style={[styles.marker, scaleStyle]}
+                                resizeMode="cover"
+                                />
+                            </Animated.View>
+                        </MapView.Marker>
+                    );
+                })}
             </MapView>
 
             <View style={styles.searchBox}>
@@ -158,8 +192,35 @@ const styles = StyleSheet.create({
       },
       chipsScrollView: {
         position:'absolute', 
-        top:Platform.OS === 'ios' ? 90 : 80, 
+        top:Platform.OS === 'ios' ? 70 : 80, 
         paddingHorizontal:10
+      },
+      chipsIcon: {
+        marginRight: 5,
+      },
+      chipsItem: {
+        flexDirection:"row",
+        backgroundColor:'#fff', 
+        borderRadius:20,
+        padding:8,
+        paddingHorizontal:20, 
+        marginHorizontal:10,
+        height:35,
+        shadowColor: '#ccc',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+        elevation: 10,
+      },
+      markerWrap: {
+        alignItems: "center",
+        justifyContent: "center",
+        width:50,
+        height:50,
+      },
+      marker: {
+        width: 30,
+        height: 30,
       },
 
   });

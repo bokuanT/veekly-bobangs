@@ -7,8 +7,8 @@ const Images = [
 export const markers = [
     {
       coordinate: {
-        latitude: 22.6293867,
-        longitude: 88.4354486,
+        latitude: 1.304868,
+        longitude: 103.833055,
       },
       title: "Amazing Food Place",
       description: "This is the best food place",
@@ -18,8 +18,8 @@ export const markers = [
     },
     {
       coordinate: {
-        latitude: 22.6345648,
-        longitude: 88.4377279,
+        latitude: 1.305865,
+        longitude: 103.831521,
       },
       title: "Second Amazing Food Place",
       description: "This is the second best food place",
@@ -29,8 +29,8 @@ export const markers = [
     },
     {
       coordinate: {
-        latitude: 22.6281662,
-        longitude: 88.4410113,
+        latitude: 1.302615,
+        longitude: 103.831070,
       },
       title: "Third Amazing Food Place",
       description: "This is the third best food place",
