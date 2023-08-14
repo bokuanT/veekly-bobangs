@@ -6,36 +6,23 @@ import { COLORS, icons, images, SIZES} from '../constants';
 import { NearbyDeals, ScreenHeaderBtn, Welcome } from '../components';
 import { Map } from '../location/Map';
 
-//tmp import for testing
-import NearbyDealCard from '../components/common/cards/nearby/NearbyDealCard';
-
 const Home = () => {
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: COLORS.lightWhite}}>
-            
-            {/* Header configuration */}
-            {/* Note: This isn't the standard way to configure headers in React Navigation, but it's kept for consistency */}
-            <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: SIZES.medium,
-                    backgroundColor: COLORS.lightWhite,
-                }}
-            >
-                
-            </View>
-            
-            <View style={{ flex: 1, paddingHorizontal: SIZES.medium }}>
-                {/* Welcome Component */}
-                <Welcome />
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
 
-                {/* NearbyDeals Component */}
-                <NearbyDeals />
-            </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View
+          style={{
+            flex: 1,
+            padding: SIZES.medium,
+          }}
+        >
+          <Welcome/>
 
-        </SafeAreaView>
+          <NearbyDeals />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
     )
 }
 export default Home;

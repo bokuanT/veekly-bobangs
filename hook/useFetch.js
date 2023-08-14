@@ -5,14 +5,7 @@ const useFetch = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const options = {
-        method: 'GET',
-        url: 'https://pizzaallapala.p.rapidapi.com/productos-promo',
-        headers: {
-          'X-RapidAPI-Key': '473bc0fe66msh363010cd87c16bap115107jsnb643fa8c3d0c',
-          'X-RapidAPI-Host': 'pizzaallapala.p.rapidapi.com'
-        }
-    };
+
     const options2 = {
         method: 'GET',
         url: 'https://6fcc-137-132-26-238.ngrok-free.app/get',

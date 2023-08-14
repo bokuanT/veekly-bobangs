@@ -11,9 +11,20 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import DealDetails from './deal-details/[id]';
 
-const Stacks = createStackNavigator();
+const HomeStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const HomeStackNavigator = () => {
+  return (
+    //                                   change this to false to hide details top tab
+    <HomeStack.Navigator initialRouteName="Home" screenOptions={{headerShown: true}}>
+      <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen name="DealDetails" component={DealDetails} />
+    </HomeStack.Navigator>
+  );
+};
 
 const TabNavigator = () => {  
   return (
@@ -27,7 +38,7 @@ const TabNavigator = () => {
       >
       <Tab.Screen
         name="List"
-        component={Home}
+        component={HomeStackNavigator}
         options={{
           tabBarIcon: ({color}) => (
             <Entypo name="home" size={32} color={color} />

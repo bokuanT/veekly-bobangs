@@ -23,8 +23,6 @@ const styles = StyleSheet.create({
     padding: SIZES.small,
     backgroundColor: COLORS.lightGray,  // Use a light gray background for the entire card
     borderRadius: SIZES.medium,
-    ...SHADOWS.medium,
-    shadowColor: COLORS.black,  // Changed from white to black for better shadow
   }),
   backgroundImage: {
     flex: 1,

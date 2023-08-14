@@ -1,17 +1,15 @@
-import { useState } from 'react'
 import { 
   View, Text, TouchableOpacity, FlatList, ActivityIndicator 
 } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useNavigation } from '@react-navigation/native';
 
 import styles from './nearbydeals.style'
 import { COLORS, SIZES } from '../../../constants'
 import NearbyDealCard from '../../common/cards/nearby/NearbyDealCard'
 import useFetch from '../../../hook/useFetch'
 
-const NearbyDeals = () => {
-  //const router = useRouter();
-  
+const NearbyDeals = () => {  
+  const navigation = useNavigation();
   const {data, isLoading, error } = useFetch();
   console.log(data)
   //console.log(error)
@@ -30,16 +28,23 @@ const NearbyDeals = () => {
         ) : error ? (
           <Text>Something went wrong</Text>
         ) : (
-          <FlatList
-            data={data}
-            renderItem={({item}) => (
-              <NearbyDealCard
-                item={item}
-              />
-            )}
-            keyExtractor={item => item?.id}
-            contentContainerStyle={{columnGap: SIZES.medium}}
-          />
+          // <FlatList
+          //   data={data}
+          //   renderItem={({item}) => (
+          //     <NearbyDealCard
+          //       item={item}
+          //     />
+          //   )}
+          //   keyExtractor={item => item?.id}
+          //   contentContainerStyle={{columnGap: SIZES.medium}}
+          // />
+          data?.map((deal) => (
+            <NearbyDealCard
+              item={deal}
+              key={deal?.deal_id} //TODO: update this
+              handleCardPress={() => navigation.navigate('DealDetails', {deal})}
+            />
+          ))
         )}
       </View>
     </View>
