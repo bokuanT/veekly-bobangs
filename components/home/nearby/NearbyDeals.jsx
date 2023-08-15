@@ -28,16 +28,6 @@ const NearbyDeals = () => {
         ) : error ? (
           <Text>Something went wrong</Text>
         ) : (
-          // <FlatList
-          //   data={data}
-          //   renderItem={({item}) => (
-          //     <NearbyDealCard
-          //       item={item}
-          //     />
-          //   )}
-          //   keyExtractor={item => item?.id}
-          //   contentContainerStyle={{columnGap: SIZES.medium}}
-          // />
           data?.map((deal) => (
             <NearbyDealCard
               item={deal}
