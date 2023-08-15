@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Home from './home';
 import Maps from './mapview';
-import Test from './hometest';
+import Loc from './hometest';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { COLORS, icons, images, SIZES} from '../constants';
 import { useRouter, Stack } from "expo-router";
@@ -31,6 +31,7 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: styles.tabBar,
+        headerShown: false
         // tabBarActiveTintColor: Colors.red,
         // tabBarInactiveTintColor: Colors.gray,
         // tabBarShowLabel: false,
@@ -41,7 +42,7 @@ const TabNavigator = () => {
         component={HomeStackNavigator}
         options={{
           tabBarIcon: ({color}) => (
-            <Entypo name="home" size={32} color={color} />
+            <Entypo name="list" size={32} color={color} />
           ),
         }}
       />
@@ -50,13 +51,13 @@ const TabNavigator = () => {
         component={Maps}
         options={{
           tabBarIcon: ({color}) => (
-            <Entypo name="heart" size={32} color={color} />
+            <Entypo name="map" size={32} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name="New"
-        component={Test}
+        name="Test"
+        component={Loc}
         options={{
           tabBarIcon: ({color}) => (
             <Entypo name="star" size={32} color={color} />
