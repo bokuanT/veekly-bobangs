@@ -8,16 +8,17 @@ import {
     TextInput, 
     ScrollView, 
     TouchableOpacity, 
-    Animated, 
     Dimensions, 
+    FlatList,
     } from 'react-native';
 
 import { COLORS, icons, images, SIZES} from '../constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {markers} from './mapData';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-// import Geolocation from '@react-native-community/geolocation';
+import Animated, { Easing } from 'react-native-reanimated';
 import * as Location from "expo-location";
+
+// const { interpolate } = Animated;
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 220;
@@ -25,7 +26,8 @@ const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 
-export const Mapss   = () => {
+
+export const Map  = () => {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [position, setPosition] = useState({
@@ -34,8 +36,10 @@ export const Mapss   = () => {
         latitudeDelta: 0.001,
         longitudeDelta: 0.001,
       });
-
     
+    const [selectedMarkerIndex, setSelectedMarkerIndex] = useState(0);
+    const scrollX = new Animated.Value(selectedMarkerIndex * CARD_WIDTH);
+
     const initialMapState = {
         markers,
         categories: [
@@ -54,33 +58,46 @@ export const Mapss   = () => {
         ],
     };
 
+    const markers = [
+        {
+          coordinate: {
+            latitude: 1.304868,
+            longitude: 103.833055,
+          },
+          title: "Amazing Food Place",
+          id: 1,
+        },
+        {
+          coordinate: {
+            latitude: 1.305865,
+            longitude: 103.831521,
+          },
+          title: "Second Amazing Food Place",
+          id: 2,
+        },
+        {
+          coordinate: {
+            latitude: 1.302615,
+            longitude: 103.831070,
+          },
+          title: "Third Amazing Food Place",
+          id: 3,
+        },
+    ];
 
-    const [state, setState] = React.useState(initialMapState);
-
-    let mapAnimation = new Animated.Value(0);
 
 
-    const interpolations = state.markers.map((marker, index) => {
-        const inputRange = [
-            (index - 1) * CARD_WIDTH,
-            index * CARD_WIDTH,
-            ((index + 1) * CARD_WIDTH),
-            ];
-        
-            const scale = mapAnimation.interpolate({
-            inputRange,
-            outputRange: [1, 1.5, 1],
-            extrapolate: "clamp"
-            });
-        
-            return { scale };
-        }
-    );
-    
+    const cardTranslateX = Animated.interpolateNode(scrollX, {
+        inputRange: markers.map((_, index) => index * CARD_WIDTH),
+        outputRange: markers.map((_, index) => index * CARD_WIDTH * -1),
+        extrapolate: Animated.Extrapolate.CLAMP,
+        easing: Easing.inOut(Easing.ease),
+      });
+
+
 
     useEffect(() => {
         (async () => {
-        // let index = Math.floor(value / CARD_WIDTH + 0.3);
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
             console.log('not granted')
@@ -108,32 +125,47 @@ export const Mapss   = () => {
                 style={styles.map} 
                 // mapType=''
                 region={position}>
+
                 <Marker 
-                style={styles.marker}
-                  coordinate={position}
-                  image= {require('../assets/icons/map_marker.png')}
+                    style={styles.marker}
+                    coordinate={position}
+                //   image= {require('../assets/icons/map_marker.png')}
                 />
-                {/* {state.markers.map((marker, index) => {
-                    const scaleStyle = {
-                        transform: [
-                            {
-                                scale: interpolations[index].scale,
-                            },
-                        ],
-                    };
-                    return (
-                        <MapView.Marker key={index} coordinate={marker.coordinate} onPress={(e)=>onMarkerPress(e)}>
-                            <Animated.View style={[styles.markerWrap]}>
-                                <Animated.Image
-                                source={require('../assets/icons/map_marker.png')}
-                                style={[styles.marker, scaleStyle]}
-                                resizeMode="cover"
-                                />
-                            </Animated.View>
-                        </MapView.Marker>
-                    );
-                })} */}
+                {markers.map((marker, index) => (
+                    <Marker
+                        key={marker.id}
+                        coordinate={marker.coordinate}
+                        title={marker.title}
+                        onPress={() => {
+                            setSelectedMarkerIndex(index);
+                            scrollX.setValue(index * CARD_WIDTH);
+                          }}
+                    />
+                    ))}
             </MapView>
+            <FlatList
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.cardContainer}
+                data={markers}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item, index }) => (
+                <Animated.View
+                    style={[
+                    styles.card,
+                    {
+                        transform: [{ translateX: cardTranslateX }],
+                        zIndex: selectedMarkerIndex === index ? 1 : 0,
+                        elevation: selectedMarkerIndex === index ? 6 : 5,
+                    },
+                    ]}
+                >
+                    {/* Card content */}
+                    <Text>{item.title}</Text>
+                </Animated.View>
+                )}
+            />
 
             <View style={styles.searchBox}>
                 <TextInput 
@@ -160,7 +192,7 @@ export const Mapss   = () => {
                 paddingRight: Platform.OS === 'android' ? 20 : 0
                 }}
             >
-                {state.categories.map((category, index) => (
+                {initialMapState.categories.map((category, index) => (
                 <TouchableOpacity key={index} style={styles.chipsItem}>
                     {category.icon}
                     <Text>{category.name}</Text>
@@ -195,15 +227,15 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 10,
       },
-      chipsScrollView: {
+    chipsScrollView: {
         position:'absolute', 
         top:Platform.OS === 'ios' ? 70 : 80, 
         paddingHorizontal:10
-      },
-      chipsIcon: {
+    },
+    chipsIcon: {
         marginRight: 5,
-      },
-      chipsItem: {
+    },
+    chipsItem: {
         flexDirection:"row",
         backgroundColor:'#fff', 
         borderRadius:20,
@@ -216,16 +248,32 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 5,
         elevation: 10,
-      },
-      markerWrap: {
+    },
+    markerWrap: {
         alignItems: "center",
         justifyContent: "center",
         width:50,
         height:50,
-      },
-      marker: {
+    },
+    marker: {
         width: 30,
         height: 30,
-      },
+    },
+    cardContainer: {
+        padding: 16,
+        flexDirection: 'row',
+    },
+    card: {
+        width: CARD_WIDTH,
+        marginRight: 16,
+        backgroundColor: 'white',
+        borderRadius: 8,
+        padding: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5,
+    },
 
   });
