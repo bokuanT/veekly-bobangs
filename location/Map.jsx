@@ -79,7 +79,7 @@ export const Mapss   = () => {
 
     useEffect(() => {
         (async () => {
-        
+        // let index = Math.floor(value / CARD_WIDTH + 0.3);
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
             console.log('not granted')
@@ -107,8 +107,12 @@ export const Mapss   = () => {
                 style={styles.map} 
                 // mapType=''
                 region={position}>
-                <Marker coordinate={position}/>
-                {state.markers.map((marker, index) => {
+                <Marker 
+                style={styles.marker}
+                  coordinate={position}
+                  image= {require('../assets/icons/map_marker.png')}
+                />
+                {/* {state.markers.map((marker, index) => {
                     const scaleStyle = {
                         transform: [
                             {
@@ -127,7 +131,7 @@ export const Mapss   = () => {
                             </Animated.View>
                         </MapView.Marker>
                     );
-                })}
+                })} */}
             </MapView>
 
             <View style={styles.searchBox}>
