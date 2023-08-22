@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import { 
     Platform, 
@@ -10,6 +10,7 @@ import {
     TouchableOpacity, 
     Dimensions, 
     FlatList,
+    Image
     } from 'react-native';
 
 import { COLORS, icons, images, SIZES} from '../constants';
@@ -25,6 +26,11 @@ const CARD_HEIGHT = 220;
 const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
+const Images = [
+    { image: require("../assets/images/food-banner1.jpg") },
+    { image: require("../assets/images/food-banner2.jpg") },
+    { image: require("../assets/images/food-banner3.jpg") },
+];
 
 
 export const Map  = () => {
@@ -36,13 +42,78 @@ export const Map  = () => {
         latitudeDelta: 0.001,
         longitudeDelta: 0.001,
       });
+
+    const markers = [
+        {
+            coordinate: {
+            latitude: 1.304868,
+            longitude: 103.833055,
+            },
+            title: "Amazing Food Place",
+            id: 1,
+            image: Images[0].image,
+        },
+        {
+            coordinate: {
+            latitude: 1.305865,
+            longitude: 103.831521,
+            },
+            title: "Second Amazing Food Place",
+            id: 2,
+            image: Images[1].image,
+        },
+        {
+            coordinate: {
+            latitude: 1.302615,
+            longitude: 103.831070,
+            },
+            title: "Third Amazing Food Place",
+            id: 3,
+            image: Images[2].image,
+        },
+    ];
+
+
     
     const [selectedMarkerIndex, setSelectedMarkerIndex] = useState(0);
     const scrollX = new Animated.Value(selectedMarkerIndex * CARD_WIDTH);
+    const flatListRef = useRef(null);
+    const mapRef = useRef(null);
+    const scrollViewRef = useRef(null);
+
+    const cardTranslateX = Animated.interpolateNode(scrollX, {
+        inputRange: markers.map((_, index) => index * CARD_WIDTH),
+        outputRange: markers.map((_, index) => index * CARD_WIDTH * -1),
+        extrapolate: Animated.Extrapolate.CLAMP,
+        easing: Easing.inOut(Easing.ease),
+    });
+
+
+
+    const handleMarkerPress = (index) => {
+        setSelectedMarkerIndex(index);
+        const xOffset = index * CARD_WIDTH;
+        // scrollViewRef.current.scrollTo({ x: xOffset });
+        flatListRef.current.scrollToIndex({ index });
+        mapRef.current.animateToRegion({
+          latitude: markers[index].coordinate.latitude,
+          longitude: markers[index].coordinate.longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        });
+    };
+    
+    const handleCardScroll = (event) => {
+        const index = Math.round(event.nativeEvent.contentOffset.x / CARD_WIDTH);
+        setSelectedMarkerIndex(index);
+    };
 
     const initialMapState = {
-        markers,
         categories: [
+            { 
+                name: 'All', 
+                // icon: <MaterialCommunityIcons style={styles.chipsIcon} name="food-fork-drink" size={18} />,
+            },
             { 
                 name: 'Chope', 
                 icon: <MaterialCommunityIcons style={styles.chipsIcon} name="food-fork-drink" size={18} />,
@@ -58,41 +129,6 @@ export const Map  = () => {
         ],
     };
 
-    const markers = [
-        {
-          coordinate: {
-            latitude: 1.304868,
-            longitude: 103.833055,
-          },
-          title: "Amazing Food Place",
-          id: 1,
-        },
-        {
-          coordinate: {
-            latitude: 1.305865,
-            longitude: 103.831521,
-          },
-          title: "Second Amazing Food Place",
-          id: 2,
-        },
-        {
-          coordinate: {
-            latitude: 1.302615,
-            longitude: 103.831070,
-          },
-          title: "Third Amazing Food Place",
-          id: 3,
-        },
-    ];
-
-
-
-    const cardTranslateX = Animated.interpolateNode(scrollX, {
-        inputRange: markers.map((_, index) => index * CARD_WIDTH),
-        outputRange: markers.map((_, index) => index * CARD_WIDTH * -1),
-        extrapolate: Animated.Extrapolate.CLAMP,
-        easing: Easing.inOut(Easing.ease),
-      });
 
 
 
@@ -119,54 +155,28 @@ export const Map  = () => {
         })();
     }, []);
 
+
     return (
         <View style={styles.container}>
             <MapView
                 style={styles.map} 
-                // mapType=''
-                region={position}>
-
+                region={position}
+                ref = {mapRef} 
+                >
                 <Marker 
                     style={styles.marker}
                     coordinate={position}
-                //   image= {require('../assets/icons/map_marker.png')}
+                    image= {require('../assets/icons/map_marker.png')}
                 />
                 {markers.map((marker, index) => (
                     <Marker
                         key={marker.id}
                         coordinate={marker.coordinate}
                         title={marker.title}
-                        onPress={() => {
-                            setSelectedMarkerIndex(index);
-                            scrollX.setValue(index * CARD_WIDTH);
-                          }}
+                        onPress= {()=> handleMarkerPress(index)}
                     />
-                    ))}
+                ))}
             </MapView>
-            <FlatList
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.cardContainer}
-                data={markers}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item, index }) => (
-                <Animated.View
-                    style={[
-                    styles.card,
-                    {
-                        transform: [{ translateX: cardTranslateX }],
-                        zIndex: selectedMarkerIndex === index ? 1 : 0,
-                        elevation: selectedMarkerIndex === index ? 6 : 5,
-                    },
-                    ]}
-                >
-                    {/* Card content */}
-                    <Text>{item.title}</Text>
-                </Animated.View>
-                )}
-            />
-
             <View style={styles.searchBox}>
                 <TextInput 
                     placeholder="Search here"
@@ -176,6 +186,7 @@ export const Map  = () => {
                 />
                 <Ionicons name="ios-search" size={20} />
             </View>
+
             <ScrollView
                 horizontal
                 scrollEventThrottle={1}
@@ -199,6 +210,48 @@ export const Map  = () => {
                 </TouchableOpacity>
                 ))}
             </ScrollView>
+            <Animated.ScrollView
+                horizontal
+                scrollEventThrottle={1}
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={CARD_WIDTH}
+                style={styles.scrollView}
+                contentContainerStyle={styles.endPadding}
+
+            >
+                {
+                    markers.map((marker,index)=>{
+                        return (
+                            <View key={index} style={styles.card}>
+                                <Image
+                                    source={marker.image}
+                                    style={styles.cardImage}
+                                    resizeMode="cover"
+                                />
+                                <View style={styles.textContent}>
+                                    <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
+                                    {/* <Text numberOfLines={1} style={styles.cardDescription}>
+                                    {marker.description}
+                                    </Text> */}
+                                </View>
+                            </View>
+                        )
+                    })
+                }
+
+            </Animated.ScrollView>
+
+            <FlatList
+                ref={flatListRef}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.cardContainer}
+                data={markers}
+                keyExtractor={(item) => item.id.toString()}
+                scrollEventThrottle={16}
+            />
+
         </View>
         
     );
@@ -207,7 +260,7 @@ export const Map  = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-      },
+    },
     map: {
       width: '100%',
       height: '100%',
@@ -226,7 +279,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 5,
         elevation: 10,
-      },
+    },
     chipsScrollView: {
         position:'absolute', 
         top:Platform.OS === 'ios' ? 70 : 80, 
@@ -241,7 +294,7 @@ const styles = StyleSheet.create({
         borderRadius:20,
         padding:8,
         paddingHorizontal:20, 
-        marginHorizontal:10,
+        marginHorizontal:5,
         height:35,
         shadowColor: '#ccc',
         shadowOffset: { width: 0, height: 3 },
@@ -260,20 +313,46 @@ const styles = StyleSheet.create({
         height: 30,
     },
     cardContainer: {
-        padding: 16,
-        flexDirection: 'row',
+        paddingHorizontal: 16,
+        paddingBottom: 8,
+        // flexDirection: 'row',
     },
     card: {
-        width: CARD_WIDTH,
-        marginRight: 16,
-        backgroundColor: 'white',
-        borderRadius: 8,
-        padding: 16,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        padding: 10,
+        elevation: 2,
+        backgroundColor: "#FFF",
+        marginHorizontal: 10,
+        shadowColor: "#000",
+        shadowRadius: 5,
         shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 5,
+        shadowOffset: { x: 2, y: -2 },
+        height: CARD_HEIGHT,
+        width: CARD_WIDTH,
+        overflow: "hidden",
+    },
+    scrollView: {
+        position: "absolute",
+        bottom: 30,
+        left: 0,
+        right: 0,
+        paddingVertical: 10,
+    },
+    endPadding: {
+        paddingRight: width - CARD_WIDTH,
+    },
+    cardImage: {
+        flex: 3,
+        width: "100%",
+        height: "100%",
+        alignSelf: "center",
+    },
+    cardtitle: {
+        fontSize: 12,
+        marginTop: 5,
+        fontWeight: "bold",
+    },
+    textContent: {
+        flex: 1,
     },
 
   });
