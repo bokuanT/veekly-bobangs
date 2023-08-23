@@ -113,6 +113,17 @@ export const Mapss   = () => {
                   coordinate={position}
                   image= {require('../assets/icons/map_marker.png')}
                 />
+
+                {state.markers.map((marker, index) => {
+                  return(
+                    <Marker
+                        key={marker.id}
+                        coordinate={marker.coordinate}
+                        title={marker.title}
+                        // onPress= {()=> handleMarkerPress(index)}
+                    />
+                  );
+                })}
                 {/* {state.markers.map((marker, index) => {
                     const scaleStyle = {
                         transform: [
