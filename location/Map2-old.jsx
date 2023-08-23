@@ -22,8 +22,10 @@ import * as Location from "expo-location";
 // const { interpolate } = Animated;
 
 const { width, height } = Dimensions.get("window");
-const CARD_HEIGHT = 220;
-const CARD_WIDTH = width * 0.8;
+const CARD_HEIGHT = height / 4;
+const CARD_WIDTH = CARD_HEIGHT - 50;
+// const CARD_HEIGHT = 220;
+// const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 const Images = [
@@ -76,22 +78,25 @@ export const Map  = () => {
 
     
     const [selectedMarkerIndex, setSelectedMarkerIndex] = useState(0);
-    const scrollX = new Animated.Value(selectedMarkerIndex * CARD_WIDTH);
+    // const scrollX = new Animated.Value(selectedMarkerIndex * CARD_WIDTH);
     const flatListRef = useRef(null);
     const mapRef = useRef(null);
     const scrollViewRef = useRef(null);
 
-    const cardTranslateX = Animated.interpolateNode(scrollX, {
-        inputRange: markers.map((_, index) => index * CARD_WIDTH),
-        outputRange: markers.map((_, index) => index * CARD_WIDTH * -1),
-        extrapolate: Animated.Extrapolate.CLAMP,
-        easing: Easing.inOut(Easing.ease),
-    });
+    // const cardTranslateX = Animated.interpolateNode(scrollX, {
+    //     inputRange: markers.map((_, index) => index * CARD_WIDTH),
+    //     outputRange: markers.map((_, index) => index * CARD_WIDTH * -1),
+    //     extrapolate: Animated.Extrapolate.CLAMP,
+    //     easing: Easing.inOut(Easing.ease),
+    // });
 
-    function componentWillMount() {
-        this.index = 0;
-        this.animation = new Animated.Value(0);
-    };
+    // function componentWillMount() {
+    //     this.index = 0;
+    //     this.animation = new Animated.Value(0);
+    // };
+
+    let mapAnimation = new Animated.Value(0);
+    // let index = 0;
 
 
 
@@ -108,10 +113,6 @@ export const Map  = () => {
         });
     };
     
-    const handleCardScroll = (event) => {
-        const index = Math.round(event.nativeEvent.contentOffset.x / CARD_WIDTH);
-        setSelectedMarkerIndex(index);
-    };
 
     const initialMapState = {
         categories: [
@@ -161,24 +162,24 @@ export const Map  = () => {
     }, []);
 
 
-    // const interpolations = markers.map((marker, index) => {
-    //     const inputRange = [
-    //       (index - 1) * CARD_WIDTH,
-    //       index * CARD_WIDTH,
-    //       ((index + 1) * CARD_WIDTH),
-    //     ];
-    //     const scale = this.animation.interpolate({
-    //       inputRange,
-    //       outputRange: [1, 2.5, 1],
-    //       extrapolate: "clamp",
-    //     });
-    //     const opacity = this.animation.interpolate({
-    //       inputRange,
-    //       outputRange: [0.35, 1, 0.35],
-    //       extrapolate: "clamp",
-    //     });
-    //     return { scale, opacity };
-    // });
+    const interpolations = markers.map((marker, index) => {
+        const inputRange = [
+          (index - 1) * CARD_WIDTH,
+          index * CARD_WIDTH,
+          ((index + 1) * CARD_WIDTH),
+        ];
+        const scale = mapAnimation.interpolate({
+          inputRange,
+          outputRange: [1, 2.5, 1],
+          extrapolate: "clamp",
+        });
+        const opacity = mapAnimation.interpolate({
+          inputRange,
+          outputRange: [0.35, 1, 0.35],
+          extrapolate: "clamp",
+        });
+        return { scale, opacity };
+    });
 
     return (
         <View style={styles.container}>
@@ -192,14 +193,31 @@ export const Map  = () => {
                     coordinate={position}
                     image= {require('../assets/icons/map_marker.png')}
                 />
-                {markers.map((marker, index) => (
-                    <Marker
-                        key={marker.id}
-                        coordinate={marker.coordinate}
-                        title={marker.title}
-                        onPress= {()=> handleMarkerPress(index)}
-                    />
-                ))}
+                {markers.map((marker, index) => {
+                    const scaleStyle = {
+                        transform: [
+                            {
+                                scale: interpolations[index].scale,
+                            },
+                        ],
+                    };
+                    const opacityStyle = {
+                        opacity: interpolations[index].opacity,
+                    };
+                    return(
+                        <Marker
+                            key={index}
+                            coordinate={marker.coordinate}
+                            title={marker.title}
+                            // onPress= {()=> handleMarkerPress(index)}
+                            >
+                        <Animated.View style={[styles.markerWrap2, opacityStyle]}>
+                            <Animated.View style={[styles.ring, scaleStyle]} />
+                            <View style={styles.marker2} />  
+                        </Animated.View>
+                      </Marker>
+                    )
+                })}
             </MapView>
             <View style={styles.searchBox}>
                 <TextInput 
@@ -234,6 +252,7 @@ export const Map  = () => {
                 </TouchableOpacity>
                 ))}
             </ScrollView>
+
             <Animated.ScrollView
                 horizontal
                 scrollEventThrottle={1}
@@ -245,12 +264,13 @@ export const Map  = () => {
                     {
                         nativeEvent:{
                             contentOffset: {
-                                x: this.animation
+                                x: mapAnimation
                             }
                         }
                     }
-                ], {useNativeDriver: true})}
-            >
+                ], 
+                {useNativeDriver: true})}
+            >   
                 {
                     markers.map((marker,index)=>{
                         return (
@@ -344,6 +364,25 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
     },
+    markerWrap2: {
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    marker2: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: "rgba(130,4,150, 0.9)",
+    },
+    ring: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: "rgba(130,4,150, 0.3)",
+        position: "absolute",
+        borderWidth: 1,
+        borderColor: "rgba(130,4,150, 0.5)",
+    },
     cardContainer: {
         paddingHorizontal: 16,
         paddingBottom: 8,
@@ -361,6 +400,12 @@ const styles = StyleSheet.create({
         height: CARD_HEIGHT,
         width: CARD_WIDTH,
         overflow: "hidden",
+    },
+    cardImage: {
+        flex: 3,
+        width: "100%",
+        height: "100%",
+        alignSelf: "center",
     },
     scrollView: {
         position: "absolute",

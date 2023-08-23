@@ -5,9 +5,8 @@ import { Stack, useRouter } from "expo-router";
 
 import { COLORS, icons, images, SIZES} from '../constants';
 import { NearbyDeals, ScreenHeaderBtn, Welcome } from '../components';
-import { Mapss } from '../location/Map';
-import { Map } from '../location/Map2';
-import { Screens } from '../location/Map3';
+import { Map } from '../location/Map';
+
 
 
 
@@ -20,7 +19,7 @@ const Maps = () => {
           }}
       >
   
-          <Mapss/>
+          <Map/>
   
       </View>
   
