@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -16,8 +16,7 @@ import MapView, {Marker} from "react-native-maps";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import * as Location from "expo-location";
-
+import LocationContext from './Locationcontext';
 
 // import StarRating from '../components/StarRating';
 
@@ -30,9 +29,9 @@ const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 export const Map = () => {
   const theme = useTheme();
-  const [location, setLocation] = React.useState(null);
-  const [errorMsg, setErrorMsg] = React.useState(null);
-  const [position, setPosition] = React.useState({
+  const [location_cur, setLocation] = React.useState(null);
+  const [errorMsg_cur, setErrorMsg] = React.useState(null);
+  const [position_cur, setPosition] = React.useState({
     latitude: 41.38145,
     longitude: 2.17182,
     latitudeDelta: 0.005,
@@ -138,28 +137,12 @@ export const Map = () => {
   let mapIndex = 0;
   let mapAnimation = new Animated.Value(0);
 
+  const { location, errorMsg, position } = useContext(LocationContext);
   useEffect(() => {
-    (async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-        console.log('not granted')
-        setErrorMsg('Permission to access location was denied');
-        return;
-    } else {
-        console.log('granted')
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
+    setErrorMsg(errorMsg);
     setLocation(location);
-    setPosition({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.005,
-        longitudeDelta: 0.005,
-    })
-    console.log(location)
-    })();
-  }, []);
+    setPosition(position);
+  }, [location, errorMsg, position]);
 
   useEffect(() => {
     mapAnimation.addListener(({ value }) => {
