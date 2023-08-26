@@ -16,7 +16,6 @@ import MapView, {Marker} from "react-native-maps";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import * as Location from "expo-location";
 import LocationContext from './Locationcontext';
 
 // import StarRating from '../components/StarRating';
