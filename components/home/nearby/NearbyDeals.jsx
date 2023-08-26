@@ -1,7 +1,9 @@
 import { 
   View, Text, TouchableOpacity, FlatList, ActivityIndicator 
 } from 'react-native'
+import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import Slider from "@react-native-community/slider";
 
 import styles from './nearbydeals.style'
 import { COLORS, SIZES } from '../../../constants'
@@ -11,7 +13,8 @@ import useFetch from '../../../hook/useFetch'
 const NearbyDeals = () => {  
   const navigation = useNavigation();
   const {data, isLoading, error } = useFetch();
-  console.log(data)
+  const [radius, setRadius] = useState(500); // default to 500 meters
+  //console.log(data)
   //console.log(error)
   return (
     <View style={styles.container}>
@@ -20,6 +23,17 @@ const NearbyDeals = () => {
         <TouchableOpacity>
           <Text style={styles.headerBtn}>Show all</Text>
         </TouchableOpacity>
+        <Slider
+          style={{width: 200, height: 40}}
+          minimumValue={100}
+          maximumValue={2000}
+          step={100}
+          value={radius}
+          onSlidingComplete={(value) => setRadius(value)}
+          minimumTrackTintColor={COLORS.primary}
+          maximumTrackTintColor="#000000"
+        />
+        <Text>Radius: {radius} meters</Text>
       </View>
       
       <View style={styles.cardsContainer}>
@@ -31,7 +45,7 @@ const NearbyDeals = () => {
           data?.map((deal) => (
             <NearbyDealCard
               item={deal}
-              key={deal?.deal_id} //TODO: update this
+              key={deal?.title} //TODO: update this
               handleCardPress={() => navigation.navigate('DealDetails', {deal})}
             />
           ))
