@@ -24,7 +24,7 @@ import * as Location from "expo-location";
 import { useTheme } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get("window");
-const CARD_HEIGHT = 180;
+const CARD_HEIGHT = 140;
 const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
@@ -334,19 +334,6 @@ export const Map = () => {
               <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
               {/* <StarRating ratings={marker.rating} reviews={marker.reviews} /> */}
               <Text numberOfLines={1} style={styles.cardDescription}>{marker.description}</Text>
-              <View style={styles.button}>
-                <TouchableOpacity
-                  onPress={() => {}}
-                  style={[styles.signIn, {
-                    borderColor: '#FF6347',
-                    borderWidth: 1
-                  }]}
-                >
-                  <Text style={[styles.textSign, {
-                    color: '#FF6347'
-                  }]}>Order Now</Text>
-                </TouchableOpacity>
-              </View>
             </View>
           </View>
         ))}
@@ -408,14 +395,16 @@ const styles = StyleSheet.create({
     paddingRight: width - CARD_WIDTH,
   },
   card: {
-    padding: 6,
+    padding: 0,
     elevation: 2,
     backgroundColor: "#FFF",
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
     marginHorizontal: 10,
     shadowColor: "#000",
-    shadowRadius: 5,
+    shadowRadius: 20,
     shadowOpacity: 0.3,
     shadowOffset: { x: 2, y: -2 },
     height: CARD_HEIGHT,
@@ -423,7 +412,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   cardImage: {
-    flex: 3,
+    flex: 5,
     width: "100%",
     height: "100%",
     alignSelf: "center",
@@ -433,13 +422,16 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   cardtitle: {
-    fontSize: 12,
-    // marginTop: 5,
+    fontSize: 16,
+    paddingBottom:2,
+    marginTop: -2,
     fontWeight: "bold",
+    fontFamily: "DMBold",
   },
   cardDescription: {
     fontSize: 12,
     color: "#444",
+    fontFamily: "DMRegular",
   },
   markerWrap: {
     alignItems: "center",
@@ -451,19 +443,4 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
-  button: {
-    alignItems: 'center',
-    marginTop: 5
-  },
-  signIn: {
-      width: '100%',
-      padding:5,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 3
-  },
-  textSign: {
-      fontSize: 14,
-      fontWeight: 'bold'
-  }
 });
