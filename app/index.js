@@ -48,7 +48,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Maps"
-        component={Maps}
+        component= {Maps}
         options={{
           tabBarIcon: ({color}) => (
             <Entypo name="map" size={32} color={color} />

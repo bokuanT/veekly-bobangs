@@ -7,6 +7,9 @@ import { COLORS, icons, images, SIZES} from '../constants';
 import { NearbyDeals, ScreenHeaderBtn, Welcome } from '../components';
 import { Map } from '../location/Map';
 
+
+
+
 const Maps = () => {
     return (
       <View
