@@ -119,7 +119,7 @@ export const Map = () => {
 
   useEffect(() => {
     mapAnimation.addListener(({ value }) => {
-      let index = Math.floor((value-50) / CARD_WIDTH); // animate 30% away from landing on the next item
+      let index = Math.floor(value / width); // animate 30% away from landing on the next item
       console.log("value " + value)
       console.log("index " + index)
       if (index >= state.markers.length) {

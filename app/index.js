@@ -21,7 +21,7 @@ const Tab = createBottomTabNavigator();
 const HomeStackNavigator = () => {
   return (
     //                                   change this to false to hide details top tab
-    <HomeStack.Navigator initialRouteName="Home" screenOptions={{headerShown: true}}>
+    <HomeStack.Navigator initialRouteName="Home" screenOptions={{headerShown: false}}>
       <HomeStack.Screen name="Home" component={Home} />
       <HomeStack.Screen name="DealDetails" component={DealDetails} />
     </HomeStack.Navigator>

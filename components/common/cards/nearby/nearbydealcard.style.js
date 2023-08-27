@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
   }),
   backgroundImage: {
+    
     flex: 1,
     borderRadius: SIZES.small,
     overflow: 'hidden',  // This will ensure the image takes the borderRadius

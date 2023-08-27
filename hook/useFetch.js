@@ -8,7 +8,7 @@ const useFetch = () => {
 
     const options2 = {
         method: 'GET',
-        url: 'https://65aa-66-96-212-138.ngrok-free.app/get',
+        url: 'https://e04e-66-96-212-138.ngrok-free.app/get',
         headers: {
             "ngrok-skip-browser-warning": "69420"
           }
