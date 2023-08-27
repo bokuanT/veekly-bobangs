@@ -10,6 +10,7 @@ import { COLORS, SIZES } from '../../../constants'
 import NearbyDealCard from '../../common/cards/nearby/NearbyDealCard'
 import useFetch from '../../../hook/useFetch'
 import LocationContext from '../../../location/Locationcontext';
+import DealsContext from '../../../deal_data_context/DealsContext';
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   const R = 6371; // Radius of the earth in km
@@ -30,7 +31,7 @@ function deg2rad(deg) {
 
 const NearbyDeals = () => {  
   const navigation = useNavigation();
-  const {data, isLoading, error } = useFetch();
+  const {data, isLoading, error } = useContext(DealsContext);
   const [radius, setRadius] = useState(500); // default to 500 meters
   const { location, errorMsg, position } = useContext(LocationContext);
   if (errorMsg != null) {
@@ -53,7 +54,7 @@ const NearbyDeals = () => {
             );
             return distance <= radius / 1000; // converting radius to km if it's in meters
         } else {
-            console.log("Invalid longlat data for deal:", deal);
+            console.log("Invalid longlat data for deal in Nearbydeals:", deal);
             lon = null;
             lat = null;
             return false;
