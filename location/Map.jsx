@@ -12,6 +12,7 @@ import {
   Platform,
 } from "react-native";
 import MapView, {Marker} from "react-native-maps";
+import { useNavigation } from '@react-navigation/native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,91 +22,75 @@ import LocationContext from './Locationcontext';
 // import StarRating from '../components/StarRating';
 
 import { useTheme } from '@react-navigation/native';
+import DealsContext from '../deal_data_context/DealsContext';
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 180;
 const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
+const mapData = (originalData) => {
+  return originalData.map((deal, index) => {
+    let longitude, latitude;
+    if (deal.longlat && Array.isArray(deal.longlat[0]) && deal.longlat[0].length == 2) {
+      [longitude, latitude] = deal.longlat[0];
+      return {
+        coordinate: {
+          latitude: parseFloat(latitude),
+          longitude: parseFloat(longitude),
+        },
+        title: deal.title,
+        info: deal.info,
+        image: deal.image,
+        originalDealData: deal,
+      };
+    } else {
+      console.log("Invalid longlat data for deal in Map:", deal);
+      return null;
+    }
+  }).filter(Boolean);
+};
+
 export const Map = () => {
-  const theme = useTheme();
+  // To navigate to individual deal page
+  const navigation = useNavigation();
+
+  // Context to obtain your current location
   const [location_cur, setLocation] = React.useState(null);
   const [errorMsg_cur, setErrorMsg] = React.useState(null);
   const [position_cur, setPosition] = React.useState({
-    latitude: 41.38145,
+    latitude: 41.38145, //defaults
     longitude: 2.17182,
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
   });
+  const { location, errorMsg, position } = useContext(LocationContext);
+  useEffect(() => {
+    setErrorMsg(errorMsg);
+    setLocation(location);
+    setPosition(position);
+  }, [location, errorMsg, position]);
 
-  
-
-
-  const Images = [
-    { image: require("../assets/images/food-banner1.jpg") },
-    { image: require("../assets/images/food-banner2.jpg") },
-    { image: require("../assets/images/food-banner3.jpg") },
-  ];
+  // Context to obtain all the deals from backend
+  // TODO: logic to show markers on map can be improved (use isLoading?)
+  const [data_cur, setData] = React.useState(null);
+  const [isLoading_cur, setIsLoading] = React.useState(null);
+  const [dataErrorMsg, setDataErrorMsg] = React.useState(null);
+  const { data, isLoading, error } = useContext(DealsContext);
+  useEffect(() => {
+    setDataErrorMsg(error);
+    setData(data);
+    setIsLoading(isLoading);
+  }, [data, isLoading, error]);
+  let dataConvertedForMarkers = [];
+  if (error != null) {
+    console.log("Error loading data in Map:", error)
+  } else {
+    dataConvertedForMarkers = mapData(data);
+  }
 
   const initialMapState = {
-    markers: [
-      {
-        coordinate: {
-          latitude: 1.306595,
-          longitude: 103.832835,
-        },
-        title: "Amazing Food Place",
-        description: "This is the best food place",
-        image: Images[0].image,
-        rating: 4,
-        reviews: 99,
-      },
-      {
-        coordinate: {
-          latitude: 1.305865,
-          longitude: 103.831521,
-        },
-        title: "Second Amazing Food Place",
-        description: "This is the second best food place",
-        image: Images[1].image,
-        rating: 5,
-        reviews: 102,
-      },
-      {
-        coordinate: {
-          latitude: 1.304868,
-          longitude: 103.833055,
-        },
-        title: "Third Amazing Food Place",
-        description: "This is the third best food place",
-        image: Images[2].image,
-        rating: 3,
-        reviews: 220,
-      },
-      {
-        coordinate: {
-          latitude: 1.303119,
-          longitude: 103.835172,
-
-        },
-        title: "Fourth Amazing Food Place",
-        description: "This is the fourth best food place",
-        image: Images[2].image,
-        rating: 4,
-        reviews: 48,
-      },
-      {
-        coordinate: {
-          latitude: 1.302615,
-          longitude: 103.831070,
-        },
-        title: "Fifth Amazing Food Place",
-        description: "This is the fifth best food place",
-        image: Images[1].image,
-        rating: 4,
-        reviews: 178,
-      },
-    ], 
+    markers: dataConvertedForMarkers,
     categories: [
       { 
           name: 'All', 
@@ -123,26 +108,13 @@ export const Map = () => {
           name: 'Eatigo',
           icon: <Ionicons name="md-restaurant" style={styles.chipsIcon} size={18} />,
       },
-  ],
-    // region: {
-    //   latitude: 1.304514,
-    //   longitude: 103.832222,
-    //   latitudeDelta: 0.005,
-    //   longitudeDelta: 0.005,
-    // },
+    ],
   };
 
   const [state, setState] = React.useState(initialMapState);
 
   let mapIndex = 0;
   let mapAnimation = new Animated.Value(0);
-
-  const { location, errorMsg, position } = useContext(LocationContext);
-  useEffect(() => {
-    setErrorMsg(errorMsg);
-    setLocation(location);
-    setPosition(position);
-  }, [location, errorMsg, position]);
 
   useEffect(() => {
     mapAnimation.addListener(({ value }) => {
@@ -309,7 +281,7 @@ export const Map = () => {
         {state.markers.map((marker, index) =>(
           <View style={styles.card} key={index}>
             <Image 
-              source={marker.image}
+              source={{ uri: marker.image }}
               style={styles.cardImage}
               resizeMode="cover"
             />
@@ -319,7 +291,7 @@ export const Map = () => {
               <Text numberOfLines={1} style={styles.cardDescription}>{marker.description}</Text>
               <View style={styles.button}>
                 <TouchableOpacity
-                  onPress={() => {}}
+                  onPress={() => navigation.navigate('DealDetails', {deal: marker.originalDealData})}
                   style={[styles.signIn, {
                     borderColor: '#FF6347',
                     borderWidth: 1

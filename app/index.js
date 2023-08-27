@@ -13,6 +13,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import DealDetails from './deal-details/[id]';
 import LocationProvider from '../location/LocationProvider';
+import DealsProvider from '../deal_data_context/DealsProvider';
 
 const HomeStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -77,18 +78,20 @@ const App = () => {
     return (
       // TODO: expansion for future contexts (global variables)
       <LocationProvider>
-        <NavigationContainer independent={true}>
-          <TabNavigator/>
-          {/* <Stacks.Navigator screenOptions = {{headerShown: false}}>
-            
-            <Stacks.Screen
-              name="TabNavigator"
-              component={TabNavigator}
-              options={{headerShown: false}}
-            />
+        <DealsProvider>
+          <NavigationContainer independent={true}>
+            <TabNavigator/>
+            {/* <Stacks.Navigator screenOptions = {{headerShown: false}}>
+              
+              <Stacks.Screen
+                name="TabNavigator"
+                component={TabNavigator}
+                options={{headerShown: false}}
+              />
 
-          </Stacks.Navigator> */}
-        </NavigationContainer>
+            </Stacks.Navigator> */}
+          </NavigationContainer>
+        </DealsProvider>
       </LocationProvider>
     );
   };
