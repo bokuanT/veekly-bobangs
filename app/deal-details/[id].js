@@ -47,9 +47,55 @@ const DealDetails = ({ route, navigation }) => {
                         <Text style={styles.descriptionText}>{deal.info}</Text>
                     </View>
                     <Image 
-                        source={require('.../assets/chopeIcon.png')} 
+                        source={require('./chopeIcon.png')} 
                         style={styles.brandImage} />
                 </View>
+                <View style = {styles.voucherBox}>
+                        <Text style={styles.voucherTitle}>Vouchers</Text>
+                        <FlatList
+                            data={deal.vouchers}
+                            renderItem={({ item }) => (
+                                <View style={styles.voucherContainer}>
+                                    <View> 
+                                        <Text style={{        
+                                            fontFamily: 'DMRegular',
+                                            fontSize: 16,
+                                            color: colors.black,
+                                            paddingBottom: 5}}>
+                                            {item.date}, {item.time}</Text>
+                                        {/* <Text
+                                        style={{        
+                                            fontFamily: 'DMRegular',
+                                            fontSize: 16,
+                                            color: colors.darkGray,}}>
+                                            {item.time}</Text> */}
+                                        <Text                                        style={{
+                                            fontFamily: 'DMRegular',
+                                            fontSize: 14,}}>
+                                            Original: {item.price_original}</Text>
+                                        <Text
+                                        style={{
+                                            fontFamily: 'DMBold',
+                                            fontSize: 14,}}>
+                                            Discounted: {item.price_discounted}</Text>
+                                        
+                                    </View>
+                                    <View>
+                                        <Text>Savings: {item.product_savings}</Text>
+                                    </View>
+                                    
+                                </View>
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                </View>
+                <TouchableOpacity 
+                onPress={() => { Linking.openURL(deal.link); }}
+                style={styles.buttonWrapper}>
+                    <Text style={styles.link}>Visit Offer</Text>
+                </TouchableOpacity> 
+                
+                
 
             </View>
 
@@ -160,13 +206,16 @@ const styles = StyleSheet.create({
       },
       descriptionContainer:{
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-around',
         alignItems: 'center',
-        padding:25
+        paddingHorizontal:10,
+        marginHorizontal:30,
+        // paddingRight: 20,
+        paddingTop: 25,
       },
       descriptionTextWrapper: {
-        marginTop: 25,
-        marginHorizontal: 10,
+        // marginTop: 25,
+        marginRight: 70,
     
       },
       descriptionTitle: {
@@ -195,39 +244,23 @@ const styles = StyleSheet.create({
         marginTop: 20,
         justifyContent: 'space-between',
       },
-      infoItem: {},
-      infoTitle: {
-        fontFamily: 'Lato-Bold',
-        fontSize: 12,
-        color: colors.gray,
-      },
-      infoTextWrapper: {
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        marginTop: 5,
-      },
-      infoText: {
-        fontFamily: 'Lato-Bold',
-        fontSize: 24,
-        color: colors.orange,
-      },
-      infoSubText: {
-        fontFamily: 'Lato-Bold',
-        fontSize: 14,
-        color: colors.gray,
-      },
       buttonWrapper: {
-        marginHorizontal: 20,
-        marginTop: 40,
-        backgroundColor: colors.orange,
+        alignSelf:'center',
+        width:200,
+        height:50,
+        marginHorizontal: 0,
+        // marginTop: 40,
+        backgroundColor: colors.gray,
         alignItems: 'center',
-        paddingVertical: 15,
+        paddingVertical: 5,
         borderRadius: 10,
+        textAlignVertical: 'bottom'
       },
       buttonText: {
         fontFamily: 'Lato-Bold',
         fontSize: 18,
         color: colors.white,
+        textAlign:'auto',
       },
       image: {
         width: '100%',
@@ -255,11 +288,38 @@ const styles = StyleSheet.create({
         color: 'gray',
         marginBottom: 10
     },
+    voucherBox:{
+        padding: 15,
+        paddingBottom:5,
+    },
+    voucherTitle:{
+        fontFamily: 'DMMedium',
+        fontSize: 24,
+        color: colors.black,
+        paddingBottom:10,
+        marginTop: -20,
+        // marginBottom: 10,
+    },
+
     voucherContainer: {
-        backgroundColor: 'white',
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 10
+        backgroundColor: colors.white,
+        marginHorizontal:40,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        borderRadius: 20,
+        marginTop: 10,
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        flexDirection: 'row',
+        alignItems:'center',
+        justifyContent: 'space-between'
+
     },
     tagsContainer: {
         flexDirection: 'row',
@@ -276,7 +336,8 @@ const styles = StyleSheet.create({
     link: {
         color: 'blue',
         textAlign: 'center',
-        marginBottom: 10
+        marginBottom: 10,
+        verticalAlign:'middle'
     }
 });
 
