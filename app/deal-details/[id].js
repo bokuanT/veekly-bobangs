@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Image, ImageBackground, FlatList, StyleSheet, TouchableOpacity, Linking, Dimensions } from 'react-native';
+import { View, Text, Button, Image, ImageBackground, FlatList, StyleSheet, TouchableOpacity, Linking, Dimensions } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { COLORS, FONT, SIZES } from "../../constants";
 
 
 const height = Dimensions.get('window').height;
@@ -47,12 +48,14 @@ const DealDetails = ({ route, navigation }) => {
                         <Text style={styles.descriptionText}>{deal.info}</Text>
                     </View>
                     <Image 
-                        source={require('./chopeIcon.png')} 
+                        source={require('../../assets/chopeIcon.png')} 
                         style={styles.brandImage} />
                 </View>
                 <View style = {styles.voucherBox}>
                         <Text style={styles.voucherTitle}>Vouchers</Text>
                         <FlatList
+                            // persistentScrollbar = {true}
+                            showsVerticalScrollIndicator = {true} // tryna get scroll bar to show
                             data={deal.vouchers}
                             renderItem={({ item }) => (
                                 <View style={styles.voucherContainer}>
@@ -63,12 +66,6 @@ const DealDetails = ({ route, navigation }) => {
                                             color: colors.black,
                                             paddingBottom: 5}}>
                                             {item.date}, {item.time}</Text>
-                                        {/* <Text
-                                        style={{        
-                                            fontFamily: 'DMRegular',
-                                            fontSize: 16,
-                                            color: colors.darkGray,}}>
-                                            {item.time}</Text> */}
                                         <Text                                        style={{
                                             fontFamily: 'DMRegular',
                                             fontSize: 14,}}>
@@ -80,8 +77,10 @@ const DealDetails = ({ route, navigation }) => {
                                             Discounted: {item.price_discounted}</Text>
                                         
                                     </View>
-                                    <View>
-                                        <Text>Savings: {item.product_savings}</Text>
+                                    <View style = {styles.savingsWrapper}>
+                                        {/* <Text style={{fontFamily: 'DMRegular'}}>Savings:</Text> */}
+                                        <Text style={{fontFamily: 'DMBold', fontSize: 22,}}>{item.product_savings}</Text>
+
                                     </View>
                                     
                                 </View>
@@ -89,13 +88,14 @@ const DealDetails = ({ route, navigation }) => {
                             keyExtractor={(item, index) => index.toString()}
                         />
                 </View>
-                <TouchableOpacity 
-                onPress={() => { Linking.openURL(deal.link); }}
-                style={styles.buttonWrapper}>
-                    <Text style={styles.link}>Visit Offer</Text>
-                </TouchableOpacity> 
-                
-                
+                <View style={{ flexDirection:"row", justifyContent:'space-around', marginHorizontal:30 }} >
+                  <TouchableOpacity style = {styles.buttonWrapper}>
+                    <Text style = {styles.buttonText} >View Map</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => { Linking.openURL(deal.link); }} style = {styles.buttonWrapper}>
+                    <Text style = {styles.buttonText} >Visit Site</Text>
+                  </TouchableOpacity>
+                </View>             
 
             </View>
 
@@ -147,168 +147,119 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         // opacity:0.5,
       },
-      descriptionWrapper: {
-        flex: 1,
-        backgroundColor: colors.white,
-        marginTop: -20,
-        borderRadius: 25,
-      },
-      backWrapper: {
-        flexDirection: 'row',
-        alignItems: 'left',
-        alignItems: 'center',
-        marginTop: 10,
-      },
-      backIcon: {
-        // marginLeft: 20,
-        // marginTop: 20,
-      },
-      titlesWrapper: {
-        marginHorizontal: 20,
-        marginBottom: 40,
-      },
-      itemTitle: {
-        fontFamily: 'DMBold',
-        fontSize: 35,
-        color: Colors.black,
-      },
-      locationWrapper: {
-        flexDirection: 'row',
-        gap:10,
-        alignItems: 'center',
-        marginTop: 5,
-        marginLeft: -6,
-        marginRight: 30,
-      },
-      locationText: {
-        fontFamily: 'DMMedium',
-        fontSize: 16,
-        color: colors.black,
-      },
-      heartWrapper: {
-        position: 'absolute',
-        right: 20,
-        top: 10,
-        width: 40,
-        height: 40,
-        backgroundColor: colors.white,
-        borderRadius: 64,
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-      },
-      descriptionContainer:{
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        paddingHorizontal:10,
-        marginHorizontal:30,
-        // paddingRight: 20,
-        paddingTop: 25,
-      },
-      descriptionTextWrapper: {
-        // marginTop: 25,
-        marginRight: 70,
-    
-      },
-      descriptionTitle: {
-        fontFamily: 'DMMedium',
-        fontSize: 24,
-        color: colors.black,
-      },
-      descriptionText: {
-        marginTop: 10,
-        fontFamily: 'DMRegular',
-        fontSize: 16,
-        color: colors.darkGray,
-        height: 85,
-      },
-      brandImage: {
-        width: 100,
-        height: 100,
-        resizeMode: 'cover',
-        borderRadius: 10,
-        marginBottom: 10,
-        alignContent:'center'
-      },
-      infoWrapper: {
-        flexDirection: 'row',
-        marginHorizontal: 20,
-        marginTop: 20,
-        justifyContent: 'space-between',
-      },
-      buttonWrapper: {
-        alignSelf:'center',
-        width:200,
-        height:50,
-        marginHorizontal: 0,
-        // marginTop: 40,
-        backgroundColor: colors.gray,
-        alignItems: 'center',
-        paddingVertical: 5,
-        borderRadius: 10,
-        textAlignVertical: 'bottom'
-      },
-      buttonText: {
-        fontFamily: 'Lato-Bold',
-        fontSize: 18,
-        color: colors.white,
-        textAlign:'auto',
-      },
-      image: {
-        width: '100%',
-        height: 200,
-        resizeMode: 'cover',
-        borderRadius: 10,
-        marginBottom: 10
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10
-    },
-    info: {
-        fontSize: 14,
-        marginBottom: 5
-    },
     address: {
         fontSize: 12,
         color: 'gray',
         marginBottom: 5
     },
-    hours: {
-        fontSize: 12,
-        color: 'gray',
-        marginBottom: 10
+    backWrapper: {
+      flexDirection: 'row',
+      alignItems: 'left',
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    titlesWrapper: {
+      marginHorizontal: 20,
+      marginBottom: 40,
+    },
+    itemTitle: {
+      fontFamily: 'DMBold',
+      fontSize: 35,
+      color: Colors.black,
+    },
+    descriptionWrapper: {
+      flex: 1,
+      backgroundColor: colors.white,
+      marginTop: -20,
+      borderRadius: 25,
+    },
+    locationWrapper: {
+      flexDirection: 'row',
+      gap:10,
+      alignItems: 'center',
+      marginTop: 5,
+      marginLeft: -6,
+      marginRight: 30,
+    },
+    locationText: {
+      fontFamily: 'DMMedium',
+      fontSize: 16,
+      color: colors.black,
+    },
+    heartWrapper: {
+      position: 'absolute',
+      right: 20,
+      top: 10,
+      width: 40,
+      height: 40,
+      backgroundColor: colors.white,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    descriptionContainer:{
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      paddingHorizontal:8,
+      marginHorizontal:30,
+      // paddingRight: 20,
+      paddingTop: 25,
+    },
+    descriptionTextWrapper: {
+      // marginTop: 25,
+      marginRight: 70,
+  
+    },
+    descriptionTitle: {
+      fontFamily: 'DMMedium',
+      fontSize: 24,
+      color: colors.black,
+    },
+    descriptionText: {
+      marginTop: 10,
+      fontFamily: 'DMRegular',
+      fontSize: 16,
+      color: colors.darkGray,
+      height: 85,
+    },
+    brandImage: {
+      width: 100,
+      height: 100,
+      resizeMode: 'cover',
+      borderRadius: 10,
+      marginBottom: 10,
+      alignContent:'center'
     },
     voucherBox:{
-        padding: 15,
+        paddingHorizontal: 20,
         paddingBottom:5,
+        height: 250,
     },
     voucherTitle:{
         fontFamily: 'DMMedium',
         fontSize: 24,
         color: colors.black,
-        paddingBottom:10,
+        paddingBottom:5,
         marginTop: -20,
         // marginBottom: 10,
     },
-
     voucherContainer: {
         backgroundColor: colors.white,
-        marginHorizontal:40,
+        marginHorizontal:20,
         paddingHorizontal: 15,
         paddingVertical: 15,
         borderRadius: 20,
         marginTop: 10,
-        marginBottom: 10,
+        marginBottom: 5,
         shadowColor: '#000',
         shadowOffset: {
           width: 0,
@@ -319,26 +270,44 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems:'center',
         justifyContent: 'space-between'
-
     },
-    tagsContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginBottom: 10
+    savingsWrapper: {
+      width: 70,
+      height: 70,
+      backgroundColor: "#dae9ec",
+      borderRadius: 64,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 3.84,
+      elevation: 5,
+      flexDirection: 'column'
     },
-    tag: {
-        backgroundColor: 'purple',
-        color: 'white',
-        borderRadius: 5,
-        padding: 5,
-        margin: 2
+    buttonWrapper: {
+      marginHorizontal: 40,
+      marginTop: 5,
+      backgroundColor: COLORS.tertiary,
+      alignItems: 'center',
+      paddingVertical: 15,
+      borderRadius: 10,
+      paddingHorizontal: 30
+    },
+    buttonText: {
+      fontFamily: 'DMBold',
+      fontSize: 18,
+      color: colors.white,
     },
     link: {
         color: 'blue',
         textAlign: 'center',
         marginBottom: 10,
         verticalAlign:'middle'
-    }
+    },
 });
 
 export default DealDetails;
