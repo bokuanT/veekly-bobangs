@@ -19,14 +19,15 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import LocationContext from './Locationcontext';
 
-// import StarRating from '../components/StarRating';
-
 import { useTheme } from '@react-navigation/native';
 import DealsContext from '../deal_data_context/DealsContext';
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 200;
 const CARD_WIDTH = width * 0.8;
+const card_moved = width * 0.847826;
+const offset = width * 0.076087;
+console.log("width is " + width)
 console.log("card width is " + CARD_WIDTH)
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
@@ -116,10 +117,13 @@ export const Map = () => {
 
   let mapIndex = 0;
   let mapAnimation = new Animated.Value(0);
+  mapAnimation.setValue(-200.5);
 
   useEffect(() => {
     mapAnimation.addListener(({ value }) => {
-      let index = Math.floor(value / width); // animate 30% away from landing on the next item
+      let index = Math.floor((value+offset) / card_moved); 
+      // let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
+      
       console.log("value " + value)
       console.log("index " + index)
       if (index >= state.markers.length) {
@@ -129,31 +133,42 @@ export const Map = () => {
         index = 0;
       }
 
-      clearTimeout(regionTimeout);
 
-      const regionTimeout = setTimeout(() => {
-        if( mapIndex !== index ) {
-          mapIndex = index;
-          const { coordinate } = state.markers[index];
-          _map.current.animateToRegion(
-            {
-              ...coordinate,
-              latitudeDelta: position.latitudeDelta,
-              longitudeDelta: position.longitudeDelta,
-            },
-            350
-          );
-        }
-      }, 10);
+      const { coordinate } = state.markers[index];
+      _map.current.animateToRegion(
+        {
+          ...coordinate,
+          latitudeDelta: position.latitudeDelta,
+          longitudeDelta: position.longitudeDelta,
+        },
+        350
+      );
+
+      // clearTimeout(regionTimeout);
+
+      // const regionTimeout = setTimeout(() => {
+      //   if( mapIndex !== index ) {
+      //     mapIndex = index;
+      //     const { coordinate } = state.markers[index];
+      //     _map.current.animateToRegion(
+      //       {
+      //         ...coordinate,
+      //         latitudeDelta: position.latitudeDelta,
+      //         longitudeDelta: position.longitudeDelta,
+      //       },
+      //       350
+      //     );
+      //   }
+      // }, 10);
     });
   });
 
 
   const interpolations = state.markers.map((marker, index) => {
     const inputRange = [
-      (index - 1) * CARD_WIDTH,
-      index * CARD_WIDTH,
-      ((index + 1) * CARD_WIDTH),
+      (index - 1) * card_moved,
+      index * card_moved,
+      ((index + 1) * card_moved),
     ];
 
     const scale = mapAnimation.interpolate({

@@ -24,7 +24,7 @@ const LocationProvider = ({ children }) => {
                 latitude: currentLocation.coords.latitude,
                 longitude: currentLocation.coords.longitude,
                 latitudeDelta: 0.005,
-                longitudeDelta: 0.005,
+                longitudeDelta: 0.005,      
             })
             console.log(currentLocation)
         })();
