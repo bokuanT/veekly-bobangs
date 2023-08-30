@@ -130,7 +130,8 @@ export const Map = () => {
       }
 
       clearTimeout(regionTimeout);
-
+      const ANIMATION_TO_GIVEN_COORD_TIME = 350;
+      const DELAY_BEFORE_SHOWING_NEW_POSITION = 10;
       const regionTimeout = setTimeout(() => {
         if( mapIndex !== index ) {
           mapIndex = index;
@@ -141,10 +142,10 @@ export const Map = () => {
               latitudeDelta: position.latitudeDelta,
               longitudeDelta: position.longitudeDelta,
             },
-            350
+            ANIMATION_TO_GIVEN_COORD_TIME
           );
         }
-      }, 10);
+      }, DELAY_BEFORE_SHOWING_NEW_POSITION);
     });
   });
 
