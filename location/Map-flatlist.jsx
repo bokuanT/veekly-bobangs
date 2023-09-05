@@ -22,8 +22,6 @@ import LocationContext from './Locationcontext';
 
 import { useTheme } from '@react-navigation/native';
 import DealsContext from '../deal_data_context/DealsContext';
-import Carousel from 'react-native-snap-carousel';
-
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 200;
@@ -96,7 +94,6 @@ export const Map = () => {
 
   const initialMapState = {
     markers: dataConvertedForMarkers,
-    markerss:[],
     categories: [
       { 
           name: 'All', 
@@ -136,6 +133,7 @@ export const Map = () => {
         index = 0;
       }
 
+
       const { coordinate } = state.markers[index];
       _map.current.animateToRegion(
         {
@@ -150,15 +148,31 @@ export const Map = () => {
   });
 
 
-  onCarouselItemChange = (index) => {
-    const { coordinate } = state.markers[index];
-    _map.current.animateToRegion(
-      {
-        ...coordinate,
-        latitudeDelta: position.latitudeDelta,
-        longitudeDelta: position.longitudeDelta,
-      })
+  const interpolations = state.markers.map((marker, index) => {
+    const inputRange = [
+      (index - 1) * card_moved,
+      index * card_moved,
+      ((index + 1) * card_moved),
+    ];
 
+    const scale = mapAnimation.interpolate({
+      inputRange,
+      outputRange: [1, 1.5, 1],
+      extrapolate: "clamp"
+    });
+
+    return { scale };
+  });
+
+  const onMarkerPress = (mapEventData) => {
+    const markerID = mapEventData._targetInst.return.key;
+
+    let x = (markerID * CARD_WIDTH) + (markerID * 20); 
+    if (Platform.OS === 'ios') {
+      x = x - SPACING_FOR_CARD_INSET;
+    }
+
+    _scrollView.current.scrollTo({x: x, y: 0, animated: true});
   }
 
   const onMarkerPressed = (location, index) => {
@@ -170,12 +184,10 @@ export const Map = () => {
         latitudeDelta: position.latitudeDelta,
         longitudeDelta: position.longitudeDelta,
       })
-
-      this._carousel.snapToItem(index);  
-    }
-
-
+    _flatList.current.scrollToIndex({index: index});
+  }
   const _map = React.useRef(null);
+  const _flatList = React.useRef(null);
 
   return (
     <View style={styles.container}>
@@ -193,11 +205,10 @@ export const Map = () => {
         {state.markers.map((marker, index) => (
             <Marker 
             key={index} 
-            // ref={ref => state.markerss[index] = ref}
             coordinate={marker.coordinate} 
             onPress={()=>onMarkerPressed(marker, index)}
             title={marker.title}
-            // image={require('../assets/icons/map_marker.png')}
+            image={require('../assets/icons/map_marker.png')}
             style={[styles.marker]}
             >
             </Marker>
@@ -236,40 +247,42 @@ export const Map = () => {
         ))}
       </ScrollView>
       <View style = {styles.flatList}>
-        <Carousel
-          ref={(c) => { this._carousel = c; }}
-          data={state.markers}
-          containerCustomStyle={styles.flatList}
-          renderItem={({item, index}) => 
-            <View style={styles.card} >
-                  <Image 
-                  source={{ uri: item.image }}
-                  style={styles.cardImage}
-                  resizeMode="cover"
-                  />
-              <View style={styles.textContent}>
-                <Text numberOfLines={1} style={styles.cardtitle}>{item.title}</Text>
-                <Text numberOfLines={1} style={styles.cardDescription}>{item.info}</Text>
-                <View style={styles.button}>
-                    <TouchableOpacity
-                    onPress={() => navigation.navigate('DealDetails', {deal: item.originalDealData})}
-                    style={[styles.signIn, {
-                        borderColor: '#FF6347',
-                        borderWidth: 1
-                    }]}
-                    >
-                    <Text style={[styles.textSign, {
-                        color: '#FF6347'
-                    }]}>Order Now</Text>
-                    </TouchableOpacity>
-                </View>
+        <FlatList
+            ref={_flatList}
+            horizontal
+            data={state.markers}
+            initialNumToRender={60}
+            // onScrollToIndexFailed={()=>{}}
+            renderItem={({item, index}) => 
+              <View style={styles.card} >
+                      <Image 
+                      source={{ uri: item.image }}
+                      style={styles.cardImage}
+                      resizeMode="cover"
+                      />
+                  <View style={styles.textContent}>
+                      <Text numberOfLines={1} style={styles.cardtitle}>{item.title}</Text>
+                      <Text numberOfLines={1} style={styles.cardDescription}>{item.info}</Text>
+                      <View style={styles.button}>
+                          <TouchableOpacity
+                          onPress={() => navigation.navigate('DealDetails', {deal: item.originalDealData})}
+                          style={[styles.signIn, {
+                              borderColor: '#FF6347',
+                              borderWidth: 1
+                          }]}
+                          >
+                          <Text style={[styles.textSign, {
+                              color: '#FF6347'
+                          }]}>Order Now</Text>
+                          </TouchableOpacity>
+                      </View>
+                  </View>
               </View>
-          </View>
-        }
-          sliderWidth={width}
-          itemWidth={330}
-          removeClippedSubviews={false}
-          onSnapToItem={(index) => this.onCarouselItemChange(index)}
+            }
+            snapToAlignment={'center'}
+            decelerationRate={"fast"}
+            snapToInterval={351}
+            // keyExtractor={(item) => item.id}
         />
       </View>
 
