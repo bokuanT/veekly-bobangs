@@ -26,7 +26,6 @@ const LocationProvider = ({ children }) => {
                 latitudeDelta: 0.005,
                 longitudeDelta: 0.005,      
             })
-            console.log(currentLocation)
         })();
     }, []);
 

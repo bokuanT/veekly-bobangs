@@ -95,7 +95,7 @@ const NearbyDeals = () => {
           filteredDeals?.map((deal) => (
             <NearbyDealCard
               item={deal}
-              key={deal?.title} //TODO: update this
+              key={deal?.id} //TODO: update this
               handleCardPress={() => navigation.navigate('DealDetails', {deal})}
             />
           ))

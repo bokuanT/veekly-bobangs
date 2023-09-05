@@ -136,7 +136,6 @@ export const Map = () => {
         index = 0;
       }
 
-
       const { coordinate } = state.markers[index];
       _map.current.animateToRegion(
         {
