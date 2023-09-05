@@ -198,7 +198,7 @@ export const Map = () => {
             coordinate={marker.coordinate} 
             onPress={()=>onMarkerPressed(marker, index)}
             title={marker.title}
-            image={require('../assets/icons/map_marker.png')}
+            // image={require('../assets/icons/map_marker.png')}
             style={[styles.marker]}
             >
             </Marker>
